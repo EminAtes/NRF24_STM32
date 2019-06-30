@@ -66,7 +66,7 @@ static void MX_USART1_UART_Init(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 uint8_t data[1] =
-{ 0x41 };
+{ 0x41};
 /* USER CODE END 0 */
 
 /**
@@ -104,10 +104,10 @@ int main(void)
 	RF24 radio(CE_GPIO_Port, CE_Pin, CSN_GPIO_Port, CSN_Pin, &hspi1);
 	const uint64_t pipe = 0xE8E8F0F0E1LL;
 	radio.begin();
-	radio.openWritingPipe(pipe);
-//	radio.openReadingPipe(1, pipe);
-//	radio.startListening();
-	//radio.setDataRate(RF24_250KBPS);
+//	radio.openWritingPipe(pipe);
+	radio.openReadingPipe(1, pipe);
+	radio.startListening();
+//	radio.setDataRate(RF24_250KBPS);
 	/* USER CODE END 2 */
 
 	/* Infinite loop */
@@ -117,13 +117,17 @@ int main(void)
 		/* USER CODE END WHILE */
 
 		/* USER CODE BEGIN 3 */
-//		if (radio.available())
-//			radio.read(data, 1);
-		radio.write(data,1);
-		HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);
-		//radio.printDetails();
-		//radio.setDataRate(RF24_250KBPS);
-		HAL_Delay(1000);
+		if (radio.available())
+		{
+			radio.read(data, 1);
+			HAL_UART_Transmit(&huart1,data,1,HAL_MAX_DELAY);
+			HAL_UART_Transmit(&huart1,(uint8_t *)"\n",1,HAL_MAX_DELAY);
+		}
+//		radio.write(data,1);
+//		HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);
+//		radio.printDetails();
+
+//		HAL_Delay(500);
 	}
 	/* USER CODE END 3 */
 }

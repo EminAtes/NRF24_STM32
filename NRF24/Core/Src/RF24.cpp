@@ -77,7 +77,7 @@ uint8_t RF24::write_register(uint8_t reg, const uint8_t* buf, uint8_t len)
 	uint8_t temp = (W_REGISTER | ( REGISTER_MASK & reg));
 	beginTransaction();
 	HAL_SPI_TransmitReceive(hspix, &temp, &status, 1, HAL_MAX_DELAY);
-	HAL_SPI_Receive(hspix, (uint8_t *) buf, len, HAL_MAX_DELAY);
+	HAL_SPI_Transmit(hspix, (uint8_t *) buf, len, HAL_MAX_DELAY);
 	endTransaction();
 
 	return status;
@@ -306,25 +306,25 @@ uint8_t RF24::getPayloadSize(void)
 
 #if !defined (MINIMAL)
 
-static const char rf24_datarate_e_str_0[] PROGMEM = "1MBPS";
-static const char rf24_datarate_e_str_1[] PROGMEM = "2MBPS";
-static const char rf24_datarate_e_str_2[] PROGMEM = "250KBPS";
-static const char * const rf24_datarate_e_str_P[] PROGMEM =
+static const char rf24_datarate_e_str_0[] = "1MBPS";
+static const char rf24_datarate_e_str_1[] = "2MBPS";
+static const char rf24_datarate_e_str_2[] = "250KBPS";
+static const char * const rf24_datarate_e_str_P[] =
 { rf24_datarate_e_str_0, rf24_datarate_e_str_1, rf24_datarate_e_str_2, };
-static const char rf24_model_e_str_0[] PROGMEM = "nRF24L01";
-static const char rf24_model_e_str_1[] PROGMEM = "nRF24L01+";
-static const char * const rf24_model_e_str_P[] PROGMEM =
+static const char rf24_model_e_str_0[] = "nRF24L01";
+static const char rf24_model_e_str_1[] = "nRF24L01+";
+static const char * const rf24_model_e_str_P[] =
 { rf24_model_e_str_0, rf24_model_e_str_1, };
-static const char rf24_crclength_e_str_0[] PROGMEM = "Disabled";
-static const char rf24_crclength_e_str_1[] PROGMEM = "8 bits";
-static const char rf24_crclength_e_str_2[] PROGMEM = "16 bits";
-static const char * const rf24_crclength_e_str_P[] PROGMEM =
+static const char rf24_crclength_e_str_0[] = "Disabled";
+static const char rf24_crclength_e_str_1[] = "8 bits";
+static const char rf24_crclength_e_str_2[] = "16 bits";
+static const char * const rf24_crclength_e_str_P[] =
 { rf24_crclength_e_str_0, rf24_crclength_e_str_1, rf24_crclength_e_str_2, };
-static const char rf24_pa_dbm_e_str_0[] PROGMEM = "PA_MIN";
-static const char rf24_pa_dbm_e_str_1[] PROGMEM = "PA_LOW";
-static const char rf24_pa_dbm_e_str_2[] PROGMEM = "PA_HIGH";
-static const char rf24_pa_dbm_e_str_3[] PROGMEM = "PA_MAX";
-static const char * const rf24_pa_dbm_e_str_P[] PROGMEM =
+static const char rf24_pa_dbm_e_str_0[] = "PA_MIN";
+static const char rf24_pa_dbm_e_str_1[] = "PA_LOW";
+static const char rf24_pa_dbm_e_str_2[] = "PA_HIGH";
+static const char rf24_pa_dbm_e_str_3[] = "PA_MAX";
+static const char * const rf24_pa_dbm_e_str_P[] =
 { rf24_pa_dbm_e_str_0, rf24_pa_dbm_e_str_1, rf24_pa_dbm_e_str_2, rf24_pa_dbm_e_str_3, };
 
 void RF24::printDetails(void)
@@ -377,7 +377,7 @@ bool RF24::begin(void)
 	ce(LOW);
 	csn(HIGH);
 #if defined (__ARDUINO_X86__)
-	HAL_DelayHAL_MAX_DELAY;
+	HAL_Delay(100);
 #endif
 
 	// Must allow the radio time to settle else configuration bits will not necessarily stick.
@@ -490,7 +490,7 @@ void RF24::startListening(void)
 }
 
 /****************************************************************************/
-static const uint8_t child_pipe_enable[] PROGMEM = //look here again "PROGMEM"
+static const uint8_t child_pipe_enable[] = //look here again "PROGMEM"
 		{
 		ERX_P0, ERX_P1, ERX_P2, ERX_P3, ERX_P4, ERX_P5 };
 
@@ -578,7 +578,7 @@ bool RF24::write(const void* buf, uint8_t len, const bool multicast)
 #if defined (FAILURE_HANDLING)
 			return 0;
 #else
-			HAL_DelayHAL_MAX_DELAY;
+			HAL_Delay(10);
 #endif
 		}
 #endif
@@ -931,10 +931,10 @@ void RF24::openWritingPipe(const uint8_t *address)
 }
 
 /****************************************************************************/
-static const uint8_t child_pipe[] PROGMEM =
+static const uint8_t child_pipe[] =
 {
 RX_ADDR_P0, RX_ADDR_P1, RX_ADDR_P2, RX_ADDR_P3, RX_ADDR_P4, RX_ADDR_P5 };
-static const uint8_t child_payload_size[] PROGMEM =
+static const uint8_t child_payload_size[] =
 {
 RX_PW_P0, RX_PW_P1, RX_PW_P2, RX_PW_P3, RX_PW_P4, RX_PW_P5 };
 
